@@ -1,0 +1,367 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+  <title>Threaded Comments</title>
+
+  <style type="text/css" media="screen,print">@import url("docs.css");</style>
+<META http-equiv=Content-Type content="text/html; charset=utf-8"></head>
+
+<body>
+<div><a name="top"></a></div>
+
+<div id="header">
+<table cellpadding="0" cellspacing="0" border="0" style="width:100%;"><tr>
+<td class="docheading" style="width:300px;"><h1 style="font-size: 18px; font-weight: bold;">intoEEtive.com</h1></td>
+<td class="searchbox">
+
+</td>
+</tr>
+</table>
+</div>
+
+
+<div id="navlinks">
+<a href="http://www.intoeetive.com/">intoEEtive.com</a> &gt;
+<a href="http://www.intoeetive.com/index.php/category/extending_ee">EE add-ons</a> &gt;
+<a href="http://www.intoeetive.com/index.php/comments/threaded-comments-module">Threaded Comments</a>
+</div>
+
+
+<div id="content">
+
+	<h1>Threaded Comments</h1>
+
+	<p>Threaded Comments module for ExpressionEngine 2.x enables comment threads (nested comments, comment on comment) for channel entries.</p>
+    <p>You can have unlimited depth of comment nesting.</p>
+    <p>The module will respect all commentings settings you have. It contains all extension hooks that first-party comments module does, so all of your extensions will work.</p>
+    
+    <p class="important">The syntax of the module has some differences from EE Comment module. Make sure you read these docs.</p>
+
+	<h2><a name="installation"></a>Installation</h2>
+
+<p>Place the directory contained in zip into your /system/expressionengine/third_party directory. Then go to 'Modules' section in your Control Panel and perform installation.
+</p>
+
+	<h2>Comment submission form</h2>
+
+<p>The form is almost like the form for comments module with some little additions (parent_id, notify_thread)</p>
+
+
+<code>{exp:threaded_comments:form entry_id="{segment_3}" parent_id="{segment_4}"}<br />
+{if error}<br />
+&lt;span style="color: red;"&gt;{error_text}&lt;/span&gt;<br />
+{if:else}<br />
+{if logged_out}<br />
+&lt;p class="input"&gt;<br />
+&lt;label for="comment-author"&gt;Name&lt;/label&gt;<br />
+&lt;input type="text" name="name" id="comment-author" value="Name" size="22" tabindex="1" /&gt;<br />
+&lt;small&gt;Required&lt;/small&gt;<br />
+&lt;/p&gt;<br />
+&lt;p class="input"&gt;<br />
+&lt;label for="comment-email"&gt;E-mail&lt;/label&gt;<br />
+&lt;input type="text" name="email" id="comment-email" value="Email" size="22" tabindex="2" /&gt;<br />
+&lt;small&gt;Required&lt;/small&gt;<br />
+&lt;/p&gt;<br />
+{/if}<br />
+<br />
+&lt;p&gt;<br />
+&lt;textarea name="comment" id="comment-comment" cols="22" rows="5" tabindex="4"&gt;Message&lt;/textarea&gt;<br />
+&lt;/p&gt;<br />
+{if logged_out}<br />
+&lt;p class="input"&gt;<br />
+&lt;label for="save_info"&gt;&lt;input type="checkbox" id="save_info" name="save_info" value="yes" {save_info} /&gt; Remember my personal information&lt;/label&gt;<br />
+&lt;/p&gt;<br />
+{/if}<br />
+&lt;p class="input"&gt;<br />
+&lt;label for="notify_me"&gt;&lt;input type="checkbox" id="notify_me" name="notify_me" value="yes" {notify_me} /&gt; Notify me of follow-up comments?&lt;/label&gt;<br />
+&lt;/p&gt;<br />
+{if captcha}{captcha}{/if}<br />
+&lt;div class="comment-notify-submit"&gt;<br />
+	&lt;p class="comment-submit"&gt;&lt;button type="submit" name="submit" value="submit" id="comment-submit" tabindex="5" &gt;&lt;span&gt;Submit&lt;/span&gt;&lt;/button&gt;&lt;/p&gt;<br />
+&lt;div class="clear"&gt;&lt;/div&gt;<br />
+&lt;/div&gt;<br />
+{/if}<br />
+{/exp:threaded_comments:form}
+</code>
+
+<h4>
+Parameters</h4>
+<ul>
+<li><strong>entry_id</strong> - entry_id of the channel entry to be commented. If omited, will use url_title parameter or will try to guess entry_id from URL</li>
+<li><strong>url_title</strong> - url_title of the channel entry to be commented. If omited, will try to guess entry_id from URL</li>
+<li><strong>channel</strong> - in addition to url_title, you can specify channel name</li>
+<li><strong>return</strong> - template or URL to return after comment has been submitted. Defaults to current page.</li>
+</ul>
+
+<p>While entry_id and url_title are optional, it is strongly recommended that you use them and don't rely on url auto-guessing.</p>
+
+
+
+<h4>Form fields</h4>
+<ul>
+<li><strong>name</strong></li>
+<li><strong>email</strong></li>
+<li><strong>location</strong></li>
+<li><strong>url</strong></li>
+<li><strong>comment</strong></li>
+<li><strong>captcha</strong></li>
+<li><strong>save_info</strong> - remember commenter's info</li>
+<li><strong>notify_me</strong> - notify about new comments</li>
+<li><strong>notify_thread</strong> - notify about new replies to this comment</li>
+<li><strong>parent_id</strong> - hidden field to hold ID of parent comment</li>
+</ul>
+<p>It is recommended that you change the value of parent_id dynamically with JavaScript instead of creating new form for each comment reply link.</p>
+<p class="warning">NOTE: Notification about new replies to comments will work only if you do not moderate your comments. If you have set them to moderate first, the users will receieve notification about all new comments.</p>
+
+
+<h4>Conditional variables</h4>
+
+<ul>
+<li><strong>if logged_in</strong> - check whether user is logged in</li>
+<li><strong>if logged_out</strong> - check whether user is logged out</li>
+<li><strong>if error</strong> - check if there are any errors to display (like expired commenting)</li>
+<li><strong>if captcha</strong> - check whether CAPTCHA should be displayed and checked</li>
+</ul>
+
+<h4>Single variables</h4>
+
+<ul>
+<li><strong>error_text</strong> - error message (if any)</li>
+<li><strong>captcha</strong> - CAPTCHA image</li>
+</ul>
+
+
+
+<h2>Displaying the comments</h2>
+
+<p>The syntax of exp:threaded_comments:display tag is a bit different from what you are used to, so make sure you get familiar with it.</p>
+
+
+<code>{exp:threaded_comments:display entry_id="6"}<br />
+&lt;ul&gt;<br />
+{comments}<br />
+{thread_start}<br />
+&lt;ul&gt;<br />
+{/thread_start}<br />
+&lt;li&gt;<br />
+{comment_id}--{comment}--{url_as_author}--{comment_date format="%Y-%m-%d"}<br />
+&lt;/li&gt;<br />
+{thread_end}<br />
+&lt;/ul&gt;<br />
+{/thread_end}<br />
+{/comments}<br />
+&lt;/ul&gt;<br />
+{/exp:threaded_comments:display}</code>
+
+<p>See also the <a href="#alternative-nesting">alternative nesting method</a> below.</p>
+
+<h4>General usage concepts</h4>
+
+<p>Any content within exp:threaded_comments:display tag pair will be displayed only once (except what is wrapped into tag pairs, see below). This is the main difference with comments module.<br />
+Pagination will be displayed in the place where you insert the tags. If you need it twice, place the tags twice. You don't need {paginate} tag pair.<br />
+The 'per page' (limit) parameter for pagination describes how many zero-level comment per page you want to have (i.e. comments that are replies to entry, not to other comments). So the actual number of comments displayed on page can be different. The comments thread will never be splitted between pages.<br />
+The actual comments loop should be surrounded with {comments} tag pair. It's content will be repeated as many times as many comments you have. You can add CSS classes to comments of different level by making use of {level} variable. You can also check for its value to use totally different HTML for comments of different level.  <br />
+To add HTML wrapping when the thread is going a level deeper, use {thread_start} and {thread_end} tag pairs. They should be placed within {comments} loop. All variables available within {comments} are for your use there as well.
+</p>
+
+
+<h4>Parameters</h4>
+
+<ul>
+<li><strong>entry_id</strong> - entry_id of the channel entry to be commented. If omited, will use url_title parameter or will try to guess entry_id from URL</li>
+<li><strong>entry_status</strong> - display comments only if entry has certain status (by default displays comments to all entries, even closed)</li>
+<li><strong>url_title</strong> - url_title of the channel entry to be commented. If omited, will try to guess entry_id from URL</li>
+<li><strong>channel</strong> - in addition to url_title, you can specify channel name</li>
+<li><strong>limit</strong> - number of zero-level comments to display per page</li>
+<li><strong>paginate_base</strong> - template to use as 'base' for building pagination links (defaults to current page)</li>
+
+<li><strong>orderby</strong> - field to order by. Possible values: 'date' (default), 'email', 'location', 'name', 'url'.</li>
+<li><strong>sort</strong> - sorting direction. Possible values: 'asc' (default), 'desc'</li>
+</ul>
+
+<h4>Global conditionals</h4>
+<ul>
+<li><strong>if logged_in</strong> - check whether user is logged in</li>
+<li><strong>if logged_out</strong> - check whether user is logged out</li>
+<li><strong>if no_results</strong> - no comments to display</li>
+<li><strong>if pagination</strong> - check whether there is need to display pagination links</li>
+<li><strong>if next_page</strong> - check whether there is next page</li>
+<li><strong>if previous_page</strong> - check whether there is previous page</li>
+</ul>
+
+<h4>Pagination</h4>
+<ul>
+<li><strong>pagination_links</strong> - display auto-built pagination links</li>
+<li><strong>current_page</strong> - the number of current page</li>
+<li><strong>total_pages</strong> - total pages</li>
+<li><strong>prev_link</strong> - link to previous page</li>
+<li><strong>next_link</strong> - link to next page</li>
+<li><strong>if previous_page</strong> - check whether there is previous page</li>
+</ul>
+
+<h4>Variables</h4>
+<p>Most of variables available in first-party <a href="http://expressionengine.com/user_guide/modules/comment/entries.html">Comment module</a> are available in Threaded Comments as well. </p>
+<p>Additionally (outside of {comments} loop) you have:</p>
+<ul>
+<li><strong>total_threads</strong> - the total number of threads (or root comments)</li>
+</ul>
+
+<h3>Comments loop</h3>
+
+<p>Surrounded with <strong>{comments}</strong> tag pair</p>
+
+<h4>Conditional variables</h4>
+<ul>
+<li><strong>if signature_image</strong></li>
+<li><strong>if avatar</strong></li>
+<li><strong>if photo</strong></li>
+<li><strong>if is_ignored</strong></li>
+<li><strong>if has_replies</strong></li>
+</ul>
+
+
+<h4>Single variables</h4>
+<p>All variables available within first-party comments module (including date variables) are available here as well. <a href="http://expressionengine.com/user_guide/modules/comment/entries.html#variables">Check out</a></p>
+<p>Additionally available:
+<ul>
+<li><strong>count_root</strong> - same as {count}, but counts only root comments</li>
+<li><strong>absolute_count_root</strong> - same as {absolute_count}, but counts only root comments</li>
+</ul>
+</p>
+
+<h4>Nesting comments</h4>
+<p>To nest comments, you'll need to use <strong>{thread_start}</strong> and <strong>{thread_end}</strong> tag pairs. Anything within those tag pairs will be displayed in the beginning and in the end of 'branch', respectively. <br />
+Note that the thread_start &amp; thread_end content will not be wrapped around top-level comments.</p>
+<p>Additionally, you can make use of these special variables:
+<ul>
+<li><strong>level</strong> - the nestedness level. Comments that are replies to entry have 0 level, replies to them level 1 etc.</li>
+<li><strong>parent_id</strong> - id of comment to which this one is reply</li>
+<li><strong>root_id</strong> - the id of 0-level ancestor comment of this thread</li>
+<li><strong>if has_replies</strong> - check whether comment has replies</li>
+</ul>
+</p>
+<p>Example:
+<code>
+{comments}<br />
+{thread_start}&lt;ul class="cmt_lvl_{level}"&gt;{/thread_start}<br />
+&lt;li&gt;{comment}&lt;/li&gt;<br />
+{thread_end}&lt;/ul&gt;{/thread_end}<br />
+{/comments}<br />
+&lt;/ul&gt;<br />
+</code>
+</p>
+
+<h4><a name="alternative-nesting"></a>Alternative nesting method</h4>
+<p><small>available since v.2.1</small></p>
+<p>While the method suggested above would work for almost any markup, it will generate invalid html. If you are concerned about that, you should use alternative nesting method. It is making use of 3 tag pairs: <strong>{thread_open}</strong>, <strong>{thread_close}</strong> and <strong>{thread_container_close}</strong>.</p>
+<p><strong>{thread_open}</strong> tag pair contents will be placed once and should contain the markup that is addded before child comment.</p>
+<p><strong>{thread_close}</strong> tag pair contents should contain the "closing" markup that is addded after all child comments are displayed. It will be repeated as many times as many child comments you have.</p>
+<p><strong>{thread_container_close}</strong> tag pair contents will be placed once and should contain the markup to close the root comment container. It will be also use to close comment container if the comment is 'root' and has no nested comments.</p>
+<p>Note that there is no {thread_container_open} tag pair, as container opening markup is usually the same and is repeated for each nested comment. If you need it to be different, you can make check for comment level ({if level==0} etc.)</p>
+<p>Additionally, you can make use of these special variables (same as above):
+<ul>
+<li><strong>level</strong> - the nestedness level. Comments that are replies to entry have 0 level, replies to them level 1 etc.</li>
+<li><strong>parent_id</strong> - id of comment to which this one is reply</li>
+<li><strong>root_id</strong> - the id of 0-level ancestor comment of this thread</li>
+<li><strong>if has_replies</strong> - check whether comment has replies</li>
+</ul>
+</p>
+<p>Example:
+<code>
+{comments}<br />
+&lt;li&gt; {comment}<br />
+{thread_open}&lt;ul class="cmt_lvl_{level}"&gt;{/thread_open}<br />
+{thread_close}&lt;/li&gt;&lt;/ul&gt;{/thread_close}<br />
+{thread_container_close}&lt;/li&gt;{/thread_container_close}<br />
+{/comments}<br />
+&lt;/ul&gt;<br />
+</code>
+</p>
+
+
+<h3>Reply-to form using jQuery</h3>
+<p>It's recommended to use javascript for setting proper parent_id in comment form. Here's sample code that will move and modify the form.</p>
+<code>
+{!-- do not forget to include jQuery library --}<br />
+&lt;script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"&gt;&lt;/script&gt;<br />
+<br />
+{exp:threaded_comments:display}<br />
+&lt;ul&gt;<br />
+{comments}<br />
+{thread_start}<br />
+&lt;ul&gt;<br />
+{/thread_start}<br />
+&lt;li&gt;<br />
+&lt;div class="comment-text"&gt;{comment}&lt;/div&gt;<br />
+&lt;p&gt;{url_as_author} --- &lt;a href="javascript:void(0)" class="reply" rel="{comment_id}"&gt;Reply to this comment&lt;/a&gt; &lt;a href="javascript:void(0)" class="quote reply" rel="{comment_id}"&gt;Quote and reply&lt;/a&gt; &lt;/p&gt;<br />
+&lt;/li&gt;<br />
+{thread_end}<br />
+&lt;/ul&gt;<br />
+{/thread_end}<br />
+{/comments}<br />
+&lt;/ul&gt;<br />
+{/exp:threaded_comments:display}<br />
+<br />
+&lt;p&gt;&lt;a href="javascript:void(0)" class="reply" rel="0"&gt;Reply to entry&lt;/a&gt;&lt;/p&gt;
+<br />
+<br />
+{exp:threaded_comments:form}<br />
+{if logged_out}<br />
+&lt;p&gt;
+&lt;input type="text" name="name" value="Name" /&gt;
+&lt;/p&gt;<br />
+&lt;p&gt;
+&lt;input type="text" name="email" value="Email" /&gt;
+&lt;/p&gt;<br />
+{/if}<br />
+<br />
+&lt;p&gt;<br />
+&lt;textarea name="comment" id="comment-comment" cols="22" rows="5" tabindex="4"&gt;Message&lt;/textarea&gt;<br />
+&lt;/p&gt;<br />
+<br />
+&lt;p&gt;&lt;input type="submit" name="submit" value="submit" /&gt;&lt;/p&gt;<br />
+{/exp:threaded_comments:form}
+
+<br /><br />
+{!-- this code will set proper parent_id and move the form --}<br />
+&lt;style type="text/css"&gt;<br />
+#comment_form {display: none;}<br />
+&lt;/style&gt;<br />
+&lt;script type="text/javascript"&gt;<br />
+$(document).ready(function(){<br />
+&nbsp;&nbsp;$('.reply').click(function() {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;$('#comment_form input[name=parent_id]').val($(this).attr('rel'));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;$('#comment_form').insertAfter(    // Insert the comment form after...<br />
+&nbsp;&nbsp;&nbsp;&nbsp;$(this)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;.parent()    // The containing p tag<br />
+&nbsp;&nbsp;&nbsp;&nbsp;);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;$('#comment_form').show();<br />
+&nbsp;&nbsp;});<br />
+&nbsp;&nbsp;$('.quote').click(function() {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;$('#comment_form textarea[name=comment]').val('[quote]'+ <br />
+&nbsp;&nbsp;&nbsp;&nbsp;$(this).parent().parent().find('.comment-text').text()+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;'[/quote]'<br />
+&nbsp;&nbsp;&nbsp;&nbsp;);<br />
+&nbsp;&nbsp;});<br />
+});<br />
+&lt;/script&gt;
+</code>
+<p>You might also want to move the form around, that can also be done with jQuery.</p>
+
+
+</div>
+
+
+<p class="center"><a href="#top">Top of page</a></p>
+
+<!-- {user_guide_comments} -->
+
+<div id="footer">
+  <address>Copyright &copy; 2010-2012 Yuri Salimovskiy <a href="http://www.intoeetive.com/">intoEEtive.com</a></address>
+</div>
+
+</body>
+</html>
