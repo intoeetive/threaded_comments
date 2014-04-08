@@ -3,7 +3,7 @@
 if ( ! defined('THREADED_COMMENTS_ADDON_NAME'))
 {
 	define('THREADED_COMMENTS_ADDON_NAME',         'Threaded Comments');
-	define('THREADED_COMMENTS_ADDON_VERSION',      '2.4.7');
+	define('THREADED_COMMENTS_ADDON_VERSION',      '2.4.8');
 }
 
 $config['name'] = THREADED_COMMENTS_ADDON_NAME;

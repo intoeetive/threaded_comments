@@ -1210,13 +1210,13 @@ class Threaded_comments {
         $page_previous = '';
         if ((($total_pages * $limit) - $limit) > $current_page)
 		{
-			$page_next = $basepath.$p_config['prefix'].($current_page + $limit).'/';
+			$page_next = rtrim($basepath, '/').'/'.$p_config['prefix'].($current_page + $limit).'/';
             $cond['next_page'] = TRUE;
 		}
 
 		if (($current_page - $limit ) >= 0)
 		{
-			$page_previous = $basepath.$p_config['prefix'].($current_page - $limit).'/';
+			$page_previous = rtrim($basepath, '/').'/'.$p_config['prefix'].($current_page - $limit).'/';
             $cond['previous_page'] = TRUE;
 		}
         
