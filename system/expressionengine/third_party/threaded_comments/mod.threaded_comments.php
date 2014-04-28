@@ -1561,6 +1561,13 @@ class Threaded_comments {
         $this->EE->load->library('typography');
         $this->EE->typography->initialize();
         $TYPE = $this->EE->typography;
+        
+                                      
+       	$tagdata = $TMPL->swap_var_single('next_comment_id', $nextid, $tagdata);
+        $tagdata = $TMPL->swap_var_single('prev_comment_level', $this->prev_level, $tagdata);
+        $nextrow = get_object_vars($this->comment[$nextid]);
+        if (!isset($nextrow['level'])) $nextrow['level'] = 0;
+        $tagdata = $TMPL->swap_var_single('next_comment_level', $nextrow['level'], $tagdata);
 
         foreach ($TMPL->var_single as $key => $val)
         { 
@@ -1993,8 +2000,8 @@ class Threaded_comments {
                 }
                 else
                 {
-                    $nextrow = get_object_vars($this->comment[$nextid]);
                     $repeats_nr = $row['level']-$nextrow['level']-1;
+                    $tagdata = $TMPL->swap_var_single('next_comment_level', $nextrow['level'], $tagdata);
                 }
                 
 
