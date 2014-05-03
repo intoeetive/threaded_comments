@@ -457,9 +457,9 @@ class Threaded_comments {
 							'comment_id'		=> $comment_id,
 							'comment'			=> $comment,
 							'comment_url'		=> $FNS->create_url(preg_replace("#S=.+?/#", "", $_POST['URI'])),
-							'delete_link'		=> $PREFS->item('cp_url').'?S=0&C=edit'.'&M=delete_comment_confirm'.'&channel_id='.$channel_entry->row('channel_id').'&entry_id='.$_POST['entry_id'].'&comment_id='.$comment_id,
-                            'approve_link'		=> $PREFS->item('cp_url').'?S=0&C=edit'.'&M=change_comment_status'.'&channel_id='.$channel_entry->row('channel_id').'&entry_id='.$_POST['entry_id'].'&comment_id='.$comment_id.'&status=o',
-                            'close_link'		=> $PREFS->item('cp_url').'?S=0&C=edit'.'&M=change_comment_status'.'&channel_id='.$channel_entry->row('channel_id').'&entry_id='.$_POST['entry_id'].'&comment_id='.$comment_id.'&status=c'
+							'delete_link'		=> $PREFS->item('cp_url').'?S=0&D=cp&C=addons_modules&M=show_module_cp&module=comment'.'&M=delete_comment_confirm'.'&channel_id='.$channel_entry->row('channel_id').'&entry_id='.$_POST['entry_id'].'&comment_id='.$comment_id,
+                            'approve_link'		=> $PREFS->item('cp_url').'?S=0&D=cp&C=addons_modules&M=show_module_cp&module=comment'.'&M=change_comment_status'.'&channel_id='.$channel_entry->row('channel_id').'&entry_id='.$_POST['entry_id'].'&comment_id='.$comment_id.'&status=o',
+                            'close_link'		=> $PREFS->item('cp_url').'?S=0&D=cp&C=addons_modules&M=show_module_cp&module=comment'.'&M=change_comment_status'.'&channel_id='.$channel_entry->row('channel_id').'&entry_id='.$_POST['entry_id'].'&comment_id='.$comment_id.'&status=c'
 						 );
 			
 			$template = $FNS->fetch_email_template('admin_notify_comment');
