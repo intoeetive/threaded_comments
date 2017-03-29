@@ -264,10 +264,10 @@ class Threaded_comments {
         }
         else
         {
-            $name = ($SESS->userdata['screen_name']!='') ? $SESS->userdata['screen_name'] : $SESS->userdata['username']!='';
-            $email = $SESS->userdata['email'];
-            $url = $SESS->userdata['url'];
-            $location = $SESS->userdata['location'];
+            $name = ($this->EE->input->post('name')!='')?$this->EE->input->post('name'):(($SESS->userdata['screen_name']!='') ? $SESS->userdata['screen_name'] : $SESS->userdata['username']!='');
+            $email = ($this->EE->input->post('email')!='')?$this->EE->input->post('email'):$SESS->userdata['email'];
+            $url = ($this->EE->input->post('url')!='')?$this->EE->input->post('url'):$SESS->userdata['url'];
+            $location = ($this->EE->input->post('location')!='')?$this->EE->input->post('location'):$SESS->userdata['location'];
         }
         
         $comment = $this->EE->security->xss_clean($_POST['comment']);
@@ -2042,9 +2042,9 @@ class Threaded_comments {
       /* END */
       
       
-      function _format_date($one='', $two='', $three=false)
+    function _format_date($one='', $two='', $three=false)
 	{
-		if ($this->EE->config->item('app_version')>=260)
+		if (version_compare(APP_VER, '2.6.0', '>='))
 		{
 			return $this->EE->localize->format_date($one, $two, $three);
 		}
